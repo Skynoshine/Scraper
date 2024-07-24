@@ -27,7 +27,7 @@ class Scraper {
     try {
       return elements.join('\n');
     } catch (e) {
-      Exception('Error in elementToString: $e');
+      Logger().e('Error in elementToString: $e');
       return null;
     }
   }
@@ -36,7 +36,7 @@ class Scraper {
     try {
       return element.querySelector(selector)?.text.trim();
     } catch (e) {
-      Exception('Error in elementSelec: $e');
+      Logger().e('Error in elementSelec: $e');
       return null;
     }
   }
@@ -49,7 +49,7 @@ class Scraper {
     try {
       return element.querySelector(selector)?.attributes[attr];
     } catch (e) {
-      Exception('Error in elementSelecAttr: $e');
+      Logger().e('Error in elementSelecAttr: $e');
       return null;
     }
   }
@@ -58,7 +58,7 @@ class Scraper {
     try {
       return doc.querySelector(query)?.text.trim();
     } catch (e) {
-      Exception('Error in docSelec: $e');
+      Logger().e('Error in docSelec: $e');
       return null;
     }
   }
@@ -67,7 +67,7 @@ class Scraper {
     try {
       return doc.querySelectorAll(query).map((e) => e.text).toList();
     } catch (e) {
-      Exception('Error in docSelecAll: $e');
+      Logger().e('Error in docSelecAll: $e');
       return null;
     }
   }
@@ -80,7 +80,7 @@ class Scraper {
           .map((e) => e.attributes[attr])
           .toList();
     } catch (e) {
-      Exception('Error in elementSelectAllAttr: $e');
+      Logger().e('Error in elementSelectAllAttr: $e');
       return null;
     }
   }
@@ -93,7 +93,7 @@ class Scraper {
           .map((e) => e.attributes[attr])
           .toList();
     } catch (e) {
-      Exception('Error in elementSelectAllAttr: $e');
+      Logger().e('Error in elementSelectAllAttr: $e');
       return null;
     }
   }
@@ -107,7 +107,7 @@ class Scraper {
       content.addAll(updatedContent);
       return content;
     } catch (e) {
-      Exception('Error in removeHtmlElementsList: $e');
+      Logger().e('Error in removeHtmlElementsList: $e');
       return null;
     }
   }
@@ -117,7 +117,7 @@ class Scraper {
     try {
       return doc.querySelector(query)?.attributes[attr];
     } catch (e) {
-      Exception('Error in docSelecAttr: $e');
+      Logger().e('Error in docSelecAttr: $e');
       return null;
     }
   }
@@ -130,7 +130,7 @@ class Scraper {
       content.addAll(updatedContent);
       return content;
     } catch (e) {
-      Exception('Error in removeHtmlElements: $e');
+      Logger().e('Error in removeHtmlElements: $e');
       return null;
     }
   }
@@ -159,7 +159,7 @@ class Scraper {
       }
       return uniqueImages.toList();
     } catch (e) {
-      Exception('Error in extractImage: $e');
+      Logger().e('Error in extractImage: $e');
       return null;
     }
   }
@@ -184,27 +184,32 @@ class Scraper {
       }
       return uniqueImages.toList();
     } catch (e) {
-      Exception('Error in Error in extractText: $e: $e');
+      Logger().e('Error in Error in extractText: $e: $e');
       return null;
     }
   }
 
   List<String>? extractText({
     required Document doc,
-    required String query,
-    required Map<String, String> tagToSelector,
+    required List<String> query,
+    required List<String> tagToSelector,
   }) {
     try {
       final List<String> result = [];
-      for (var selector in tagToSelector.values) {
-        result.addAll(doc
-            .querySelectorAll('$query $selector')
-            .map((e) => e.text)
-            .where((text) => text.isNotEmpty));
+      for (var query in query) {
+        for (var selector in tagToSelector) {
+          final elements = doc.querySelectorAll('$query $selector');
+          if (elements.isNotEmpty) {
+            result.addAll(
+              elements.map((e) => e.text).where((text) => text.isNotEmpty),
+            );
+            return result;
+          }
+        }
       }
-      return result;
+      return result.isNotEmpty ? result : null;
     } catch (e) {
-      Exception('Error in extractText: $e');
+      Logger().e('Error in extractText: $e');
       return null;
     }
   }
