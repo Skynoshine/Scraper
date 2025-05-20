@@ -8,6 +8,50 @@ Scraper is a Dart library designed for web scraping. It allows you to fetch and 
 
 The library also supports logging responses for debugging purposes. It's a useful tool for automating data collection from websites in an efficient and structured manner.
 
+## Example
+
+```dart
+    Future<void> main() async {
+    final Scraper scraper = Scraper();
+    final String url = 'https://books.toscrape.com/';
+
+    final Document doc = await scraper.getDocument(url: url);
+    final String? title = scraper.querySelector(
+        doc: doc,
+        query: '.col-xs-6.col-sm-4.col-md-3.col-lg-3 h3 a',
+    );
+    final String? price = scraper.querySelector(
+        doc: doc,
+        query: '.col-xs-6.col-sm-4.col-md-3.col-lg-3 p.price_color',
+    );
+    final String? availability = scraper.querySelector(
+        doc: doc,
+        query: '.col-xs-6.col-sm-4.col-md-3.col-lg-3 p.availability',
+    );
+    final String? image = scraper.querySelectAttr(
+        doc: doc,
+        query: '.col-xs-6.col-sm-4.col-md-3.col-lg-3 .image_container img',
+        attr: 'src',
+    );
+    final String? link = scraper.querySelectAttr(
+        doc: doc,
+        query: '.col-xs-6.col-sm-4.col-md-3.col-lg-3 h3 a',
+        attr: 'href',
+    );
+
+    final books = BooksEntity(
+        title: title ?? '',
+        price: price ?? '',
+        availability: availability ?? '',
+        image: image ?? '',
+        link: link ?? '',
+    );
+    print('-----------------------------------');
+    print(books.toJson());
+    print('-----------------------------------');
+    }
+```
+
 ## Features
 
 ### Fetch and Parse HTML Document

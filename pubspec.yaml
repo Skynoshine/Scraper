@@ -1,6 +1,6 @@
 name: scraper
 description: A Dart package for simplifying data scraping tasks.
-version: 1.0.2
+version: 1.0.3
 repository: https://github.com/Skynoshine/Scraper
 
 environment:
