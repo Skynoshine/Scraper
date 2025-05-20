@@ -1,6 +1,6 @@
 import 'package:html/dom.dart';
 
-import '../src/scraper.dart';
+import '../bin/src/scraper.dart';
 import 'books_entity.dart';
 
 /// Exemplo de uso de Query usando a classe [Scraper].
