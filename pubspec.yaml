@@ -1,6 +1,7 @@
 name: scraper
-description: A sample command-line application.
+description: Package para respagem de dados (scraping) visando facilitar o mesmo.
 version: 1.0.0
+repository: https://github.com/Skynoshine/Scraper
 
 environment:
   sdk: ^3.4.4
