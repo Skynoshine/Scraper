@@ -3,9 +3,9 @@ import 'package:html/dom.dart';
 import '../bin/src/scraper.dart';
 import 'books_entity.dart';
 
-/// Exemplo de uso de Query usando a classe [Scraper].
-/// Este exemplo demonstra como usar a classe [Scraper] para fazer scraping
-/// A diferença entre este exemplo e o exemplo de [elements_example.dart] é que, [elements_example.dart] tem a finalidade de obter diversos elementos, como diversos livros.
+/// Example of using Query with the [Scraper] class.
+/// This example demonstrates how to use the [Scraper] class for scraping.
+/// The difference between this example and [elements_example.dart] is that [elements_example.dart] is intended to extract multiple elements, such as several books.
 Future<void> main() async {
   final Scraper scraper = Scraper();
   final String url = 'https://books.toscrape.com/';

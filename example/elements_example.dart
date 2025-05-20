@@ -3,8 +3,8 @@ import 'package:html/dom.dart';
 import '../bin/src/scraper.dart';
 import 'books_entity.dart';
 
-/// Exemplo de uso de [elements] usando a classe [Scraper].
-/// Este exemplo demonstra como usar a classe [Scraper] para fazer scraping de múltiplos elementos/conteúdo de uma página web.
+/// Example usage of [elements] with the [Scraper] class.
+/// This example demonstrates how to use the [Scraper] class to scrape multiple elements/content from a web page.
 void main() async {
   final String url = 'https://books.toscrape.com/';
 
