@@ -1,79 +1,35 @@
 # Scraper
 
-Scraper é uma biblioteca Dart projetada para web scraping. Ele permite obter e analisar documentos HTML de sites, extrair elementos específicos com base em seletores CSS e manipular os dados extraídos. As principais funcionalidades incluem:
+Scraper is a Dart library designed for web scraping. It allows you to fetch and parse HTML documents from websites, extract specific elements using CSS selectors, and manipulate the extracted data. The main features include:
 
-- Buscar documentos HTML
-- Extrair conteúdo de texto e valores de atributos de elementos HTML
-- Remover elementos indesejados dos dados extraídos
+* Fetching HTML documents
+* Extracting text content and attribute values from HTML elements
+* Removing unwanted elements from the extracted data
 
-A biblioteca também oferece suporte para registrar respostas para fins de depuração. É uma ferramenta útil para automatizar a coleta de dados de sites de maneira eficiente e estruturada.
+The library also supports logging responses for debugging purposes. It's a useful tool for automating data collection from websites in an efficient and structured manner.
 
-## Funcionalidades
+## Features
 
-### Buscar e Analisar Documento HTML
+### Fetch and Parse HTML Document
 
-```dart
-Future<Document> document({required String url, bool? showPageBody}):
-```
+* Fetches and parses an HTML document from the provided URL. Optionally logs the page body if `showPageBody` is `true`.
 
-- Busca e analisa um documento HTML a partir da URL fornecida. Opcionalmente, registra o corpo da página se ``showPageBody`` for ``true.``
+* Converts a list of elements into a single string.
 
-```dart
-    String? elementToString({required List<String> elements})
-```
+* Selects a single element from the provided element based on the CSS selector and returns its text content.
 
-- Converte uma lista de elementos em uma única string.
+* Selects a single element from the provided element based on the CSS selector and returns the value of the specified attribute.
 
-```dart
-    String? elementSelec({required Element element, required String selector})
-```
+* Selects a single element from the document based on the CSS selector and returns its text content.
 
-- Seleciona um único elemento do elemento fornecido com base no seletor CSS e retorna seu conteúdo de texto.
+* Selects all elements from the document based on the CSS selector and returns a list of their text contents.
 
-```dart
-    String? elementSelec({required Element element, required String selector})
-```
+* Selects all elements from the document based on the CSS selector and returns a list of the specified attribute values.
 
-- Seleciona um único elemento do elemento fornecido com base no seletor CSS e retorna o valor do atributo especificado.
+* Removes specific HTML elements from the list of contents.
 
-```dart
-    String? docSelec(Document doc, String query)
-```
+* Extracts unique image sources from the document based on the CSS selector and specified attribute.
 
-- Seleciona um único elemento do documento com base no seletor CSS e retorna seu conteúdo de texto.
+* Extracts unique attribute values from the document based on the CSS selector and specified attribute.
 
-```dart
-    List<String>? docSelecAll({required Document doc, required String query})
-```
-
-- Seleciona todos os elementos do documento com base no seletor CSS e retorna uma lista de seus conteúdos de texto.
-
-```dart
-    List<String?>? docSelecAllAttr({required Document doc, required String query, required String attr})
-```
-
-- Seleciona todos os elementos do documento com base no seletor CSS e retorna uma lista dos valores dos atributos especificados.
-
-```dart
-    List<String?>? removeHtmlElementsList(List<String?> content, List<String> elements)
-```
-
-- Remove elementos HTML específicos da lista de conteúdos.
-
-```dart
-    List<String>? extractImage({required Document doc, required String query, required List<String> tagSelector, required String attr})
-```
-
-- Extrai fontes de imagens únicas do documento com base no seletor CSS e no atributo especificado.
-
-```dart
-    List<String>? extractImagesAttr({required Document doc, required String query, required List<String> tagSelector, required String attr})
-```
-
-- Extrai valores únicos de atributos do documento com base no seletor CSS e no atributo especificado.
-
-```dart
-    List<String>? extractImagesAttr({required Document doc, required String query, required List<String> tagSelector, required String attr})
-```
-
-- Extrai o conteúdo de texto do documento com base no seletor CSS e no mapa de tag-para-seletor especificado.
+* Extracts text content from the document based on the CSS selector and the specified tag-to-selector map.
