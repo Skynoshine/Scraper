@@ -1,47 +1,81 @@
+import 'dart:io';
 import 'package:html/dom.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as parser;
-import 'package:logger/logger.dart';
 
 class Scraper {
-  Future<Document> document({required String url, bool? showPageBody}) async {
+  /// Este método **deve ser chamado** para carregar e preparar o documento HTML
+  /// antes de usar qualquer outro método da classe [Scraper].
+  ///
+  /// Ignorar essa chamada pode resultar em exceções ou dados nulos.
+  ///
+  /// Exemplo:
+  /// ```dart
+  /// final doc = await scraper.document(url: 'https://exemplo.com');
+  /// ```
+  ///
+  Future<Document> getDocument({
+    required String url,
+    bool showPageBody = false,
+    int statusCode = HttpStatus.ok,
+  }) async {
     try {
       final response = await http.get(Uri.parse(url));
-      if (response.statusCode == 200) {
-        if (showPageBody ?? false) {
-          Logger().i(response.body);
+      if (response.statusCode == statusCode) {
+        if (showPageBody) {
+          print(response.body);
         }
 
         return parser.parse(response.body);
       } else {
         throw Exception(
-          'Failed to load document. \n StatusCode: ${response.statusCode}',
+          'Failed to load page: ${response.statusCode} ${response.reasonPhrase}',
         );
       }
     } catch (e) {
-      throw Exception('Error fetching document: $e');
+      rethrow;
     }
   }
 
-  String? elementToString({required List<String> elements}) {
+  /// Envia uma requisição POST para a URL e retorna o documento HTML da resposta.
+  Future<Document> postDocument({
+    required String url,
+    Map<String, String>? headers,
+    Object? body,
+    int statusCode = HttpStatus.ok,
+  }) async {
     try {
-      return elements.join('\n');
+      final response = await http.post(
+        headers: headers,
+        Uri.parse(url),
+        body: body,
+      );
+      if (response.statusCode == statusCode) {
+        return parser.parse(response.body);
+      } else {
+        throw Exception(
+          'Failed to load page: ${response.statusCode} ${response.reasonPhrase}',
+        );
+      }
     } catch (e) {
-      Logger().e('Error in elementToString: $e');
-      return null;
+      rethrow;
     }
   }
 
-  String? elementSelec({required Element element, required String selector}) {
+  /// Retorna o texto de um seletor dentro de um elemento.
+  String? elementSelect({
+    required Element element,
+    required String selector,
+  }) {
     try {
       return element.querySelector(selector)?.text.trim();
     } catch (e) {
-      Logger().e('Error in elementSelec: $e');
-      return null;
+      rethrow;
     }
   }
 
-  String? elementSelecAttr({
+  /// Retorna o valor de um atributo de um seletor dentro de um elemento.
+  String? elementSelectAttr({
     required Element element,
     required String selector,
     required String attr,
@@ -49,57 +83,71 @@ class Scraper {
     try {
       return element.querySelector(selector)?.attributes[attr];
     } catch (e) {
-      Logger().e('Error in elementSelecAttr: $e');
-      return null;
+      rethrow;
     }
   }
 
-  String? docSelec(Document doc, String query) {
+  /// Retorna o texto de um seletor dentro de um documento.
+  String? querySelector({
+    required Document doc,
+    required String query,
+  }) {
     try {
       return doc.querySelector(query)?.text.trim();
     } catch (e) {
-      Logger().e('Error in docSelec: $e');
-      return null;
+      rethrow;
     }
   }
 
-  List<String>? docSelecAll({required Document doc, required String query}) {
+  /// Retorna uma lista com os textos de todos os seletores encontrados.
+  List<String>? querySelectorAll({
+    required Document doc,
+    required String query,
+  }) {
     try {
       return doc.querySelectorAll(query).map((e) => e.text).toList();
     } catch (e) {
-      Logger().e('Error in docSelecAll: $e');
-      return null;
+      rethrow;
     }
   }
 
-  List<String?>? docSelecAllAttr(
-      {required Document doc, required String query, required String attr}) {
+  /// Retorna os valores de um atributo específico de todos os seletores encontrados.
+  List<String?>? querySelectAllAttr({
+    required Document doc,
+    required String query,
+    required String attr,
+  }) {
     try {
       return doc
           .querySelectorAll(query)
           .map((e) => e.attributes[attr])
           .toList();
     } catch (e) {
-      Logger().e('Error in elementSelectAllAttr: $e');
-      return null;
+      rethrow;
     }
   }
 
-  List<String?>? elementSelectAllAttr(
-      Element element, String query, String attr) {
+  /// Retorna os valores de um atributo específico de todos os seletores dentro de um elemento.
+  List<String?>? elementSelectAllAttr({
+    required Element element,
+    required String query,
+    required String attr,
+  }) {
     try {
       return element
           .querySelectorAll(query)
           .map((e) => e.attributes[attr])
           .toList();
     } catch (e) {
-      Logger().e('Error in elementSelectAllAttr: $e');
-      return null;
+      rethrow;
     }
   }
 
-  List<String?>? removeHtmlElementsList(
-      List<String?> content, List<String> elements) {
+  /// Remove da lista [content] os itens que contenham qualquer string da lista [elements].
+  List<String?> removeHtmlElement({
+    required List<String?> content,
+    required List<String> elements,
+  }) {
     try {
       final updatedContent =
           content.where((c) => !elements.any((e) => c!.contains(e))).toList();
@@ -107,73 +155,41 @@ class Scraper {
       content.addAll(updatedContent);
       return content;
     } catch (e) {
-      Logger().e('Error in removeHtmlElementsList: $e');
-      return null;
+      rethrow;
     }
   }
 
-  String? docSelecAttr(
-      {required Document doc, required String query, required String attr}) {
+  /// Retorna o valor de um atributo específico do primeiro seletor encontrado.
+  String? querySelectAttr({
+    required Document doc,
+    required String query,
+    required String attr,
+  }) {
     try {
       return doc.querySelector(query)?.attributes[attr];
     } catch (e) {
-      Logger().e('Error in docSelecAttr: $e');
-      return null;
+      rethrow;
     }
   }
 
-  List<String?>? removeHtmlElements(List<String?> content, String element) {
-    try {
-      final updatedContent =
-          content.where((c) => !c!.contains(element)).toList();
-      content.clear();
-      content.addAll(updatedContent);
-      return content;
-    } catch (e) {
-      Logger().e('Error in removeHtmlElements: $e');
-      return null;
-    }
-  }
-
-  List<String>? extractImage({
+  /// Extrai imagens (ou outros atributos) de um documento HTML.
+  /// Pode incluir um valor direto do primeiro seletor encontrado, se [includeDirectAttr] for true.
+  List<String>? extractImages({
     required Document doc,
     required String query,
     required List<String> tagSelector,
-    required String attr,
+    String? attr,
+    bool includeDirectAttr = false,
   }) {
     try {
-      final images = docSelecAttr(doc: doc, query: query, attr: attr);
-      final imagesElements = doc.querySelectorAll(query);
       final Set<String> uniqueImages = {};
-
-      for (var selector in tagSelector) {
-        for (var element in imagesElements) {
-          final attrValue = element.attributes[selector];
-          if (attrValue != null) {
-            uniqueImages.add(attrValue);
-          }
+      final imagesElements = doc.querySelectorAll(query);
+      if (includeDirectAttr && attr != null) {
+        final directAttr = doc.querySelector(query)?.attributes[attr];
+        if (directAttr != null) {
+          uniqueImages.add(directAttr);
         }
       }
-      if (images != null) {
-        uniqueImages.add(images);
-      }
-      return uniqueImages.toList();
-    } catch (e) {
-      Logger().e('Error in extractImage: $e');
-      return null;
-    }
-  }
-
-  List<String>? extractImagesAttr({
-    required Document doc,
-    required String query,
-    required List<String> tagSelector,
-    required String attr,
-  }) {
-    try {
-      final Set<String> uniqueImages = {};
-      final imagesElements = doc.querySelectorAll(query);
-
       for (var selector in tagSelector) {
         for (var element in imagesElements) {
           final attrValue = element.attributes[selector];
@@ -184,11 +200,12 @@ class Scraper {
       }
       return uniqueImages.toList();
     } catch (e) {
-      Logger().e('Error in Error in extractText: $e: $e');
-      return null;
+      rethrow;
     }
   }
 
+  /// Extrai textos de elementos HTML combinando queries com seletores.
+  /// Retorna assim que encontra os primeiros elementos com texto.
   List<String>? extractText({
     required Document doc,
     required List<String> query,
@@ -209,8 +226,7 @@ class Scraper {
       }
       return result.isNotEmpty ? result : null;
     } catch (e) {
-      Logger().e('Error in extractText: $e');
-      return null;
+      rethrow;
     }
   }
 }
