@@ -1,6 +1,6 @@
 import 'package:html/dom.dart';
+import 'package:scraper/scraper.dart';
 
-import '../bin/src/scraper.dart';
 import 'books_entity.dart';
 
 /// Example usage of [elements] with the [Scraper] class.
