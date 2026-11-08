@@ -37,9 +37,10 @@ void main() async {
       selector: '.image_container img',
       attr: 'src',
     );
-    final String? link = scraper.elementSelect(
+    final String? link = scraper.elementSelectAttr(
       element: e,
       selector: 'h3 a',
+      attr: "href",
     );
     books.add(
       BooksEntity(
