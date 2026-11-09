@@ -55,12 +55,40 @@ final class SearchForm {
     return action.replace(query: pairs.join('&'));
   }
 
+  /// Serializes the search rule and editable field position.
   Map<String, Object> toJson() => {
         'action': action.toString(),
         'queryField': queryField,
         'fields': fields,
         'evidence': evidence,
+        'queryValueIndex': _queryValueIndex,
       };
+
+        /// Restores a saved rule while preserving repeated field positions.
+  factory SearchForm.fromJson(Map<String, dynamic> json) {
+    final rawFields = json['fields'] as Map;
+
+    final fields = <String, List<String>>{
+      for (final entry in rawFields.entries)
+        entry.key as String: List<String>.from(entry.value as List),
+    };
+
+    final queryField = json['queryField'] as String;
+    final queryValueIndex = json['queryValueIndex'] as int? ?? 0;
+
+    if (queryValueIndex < 0 ||
+        queryValueIndex > (fields[queryField]?.length ?? 0)) {
+      throw const FormatException('Invalid query-field index.');
+    }
+
+    return SearchForm._(
+      action: Uri.parse(json['action'] as String),
+      queryField: queryField,
+      fields: fields,
+      evidence: List<String>.from(json['evidence'] as List? ?? []),
+      queryValueIndex: queryValueIndex,
+    );
+  }
 
   Map<String, List<String>> _parameters(String query) {
     final result = {
