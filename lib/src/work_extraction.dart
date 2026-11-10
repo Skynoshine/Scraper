@@ -608,10 +608,10 @@ Uri? _coverUri(Element node, Uri base) {
 
 bool _sameWorkRoute(Uri work, Uri next) {
   if (work.origin != next.origin) return false;
+  // Preserves p when it identifies a work.
   const paginationKeys = {
     'page',
     'paged',
-    'p',
     'offset',
     'cursor',
     'after',
@@ -622,6 +622,7 @@ bool _sameWorkRoute(Uri work, Uri next) {
     'pagesize',
     'page_size',
   };
+  
   for (final entry in work.queryParametersAll.entries) {
     if (paginationKeys.contains(entry.key.toLowerCase())) continue;
     final values = next.queryParametersAll[entry.key];

@@ -8,3 +8,8 @@ export 'src/html_search.dart'
         HtmlSearchStatus,
         HtmlWorkCandidate,
         extractWorkCandidates;
+
+// Exposes work, reader and source inspection APIs.
+export 'src/work_extraction.dart';
+export 'src/reader_extraction.dart';
+export 'src/source_inspector.dart';
