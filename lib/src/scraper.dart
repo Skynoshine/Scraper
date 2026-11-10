@@ -3,7 +3,67 @@ import 'package:html/dom.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as parser;
 
+import 'html_search.dart' as html_search;
+import 'search_discovery.dart' as search_discovery;
+import 'source_inspector.dart' as inspector;
+
 class Scraper {
+  /// Finds supported GET search forms in an HTML document.
+  List<search_discovery.SearchForm> discoverSearchForms({
+    required Document doc,
+    required Uri pageUri,
+  }) {
+    return search_discovery.discoverSearchForms(
+      doc: doc,
+      pageUri: pageUri,
+    );
+  }
+
+  /// Searches HTML and returns associated work candidates.
+  Future<html_search.HtmlSearchResult> searchHtml({
+    required String url,
+    required String query,
+    http.Client? client,
+    Duration timeout = const Duration(seconds: 20),
+    int maxResults = 30,
+  }) {
+    return html_search.searchHtml(
+      entryUri: Uri.parse(url),
+      query: query,
+      client: client,
+      timeout: timeout,
+      maxResults: maxResults,
+    );
+  }
+
+  /// Inspects a sample search, work, chapter list and reader.
+  Future<inspector.SourceInspection> inspectSource({
+    required String url,
+    String? query,
+    Uri? workUri,
+    Uri? chapterUri,
+    inspector.SourceProfile? profile,
+    http.Client? client,
+    Duration timeout = const Duration(seconds: 20),
+    int maxRequests = 16,
+    int maxChapterListPages = 3,
+    bool probeFirstImage = false,
+  }) {
+    return inspector.SourceInspector(
+      client: client,
+      timeout: timeout,
+      maxRequests: maxRequests,
+      maxChapterListPages: maxChapterListPages,
+    ).inspect(
+      sourceUri: Uri.parse(url),
+      query: query,
+      workUri: workUri,
+      chapterUri: chapterUri,
+      profile: profile,
+      probeFirstImage: probeFirstImage,
+    );
+  }
+  
   /// This method **must be called** to load and prepare the HTML document
   /// before using any other method from the [Scraper] class.
   ///
